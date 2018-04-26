@@ -105,7 +105,7 @@ $install_steps = {
 
 Vagrant.configure(2) do |config|
     config.vm.define BOX_NAME, autostart: true, primary: false do |node|
-        node.vm.box = "ubuntu/xenial64"
+        node.vm.box = BASE_BOX
         node.vm.network :private_network, ip: "#{BOX_CIDR_24}.10"
 
         node.vm.provider "virtualbox" do |v|
