@@ -93,7 +93,7 @@ $install_steps = {
     'rust' => {:cmd => $install_rust, :priv => false},
     'cpp' => {:cmd => $install_cpp, :priv => true},
     'go' => {:cmd => $install_golang, :priv => true},
-    'gopath' => {:cmd => "mkdir -p ~/go", :priv => false},
+        'gopath' => {:cmd => "mkdir -p ~/go", :priv => false},
 
     'dots' => {:cmd => $install_dots, :priv => false},
 }
