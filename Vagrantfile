@@ -69,7 +69,7 @@ SCRIPT
 # cmake needed for ycmd
 $install_dots = <<-SCRIPT
     sudo apt-get install -y cmake zsh
-    chsh -s /usr/bin/zsh
+    sudo chsh -s /usr/bin/zsh vagrant
     ls ~/dots || git clone https://github.com/zmarcantel/dots ~/dots
     cd ~/dots
     stow vim zsh env
@@ -113,7 +113,7 @@ Vagrant.configure(2) do |config|
             v.cpus = BOX_CPUS
         end
 
-        node.vm.synced_folder ".", "/build"
+        node.vm.synced_folder ".", "/#{BOX_NAME}"
 
         $install_steps.each { |name, desc|
             if ARGV[0] == "up" or ARGV[0] == "provision"
