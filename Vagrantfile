@@ -8,7 +8,7 @@
 
 BOX_CPUS=1
 BOX_RAM_MB=4096
-BASE_BOX="ubuntu/xenial64"
+BASE_BOX="ubuntu/bionic64"
 BOX_NAME=File.basename(Dir.getwd)
 BOX_CIDR_24="10.0.100"
 
@@ -46,7 +46,7 @@ SCRIPT
 
 # compilers / languages
 
-RUST_TOOLCHAIN="nightly"
+RUST_TOOLCHAIN="stable"
 $install_rust = "curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain #{RUST_TOOLCHAIN}"
 
 $install_gcc = apt_install("gcc")
@@ -55,11 +55,12 @@ $install_cpp = apt_install("gcc clang")
 
 
 # the export here is only valid until the end of provisioning
-GO_VERSION="1.10.1"
+GO_VERSION="1.11.4"
 $install_golang = <<-SCRIPT
     cd /tmp
     ls go#{GO_VERSION}.linux-amd64.tar.gz || wget https://dl.google.com/go/go#{GO_VERSION}.linux-amd64.tar.gz
-    tar -C /usr/local -xzf go#{GO_VERSION}.linux-amd64.tar.gz
+    ls /usr/local/go || tar -C /usr/local -xzf go#{GO_VERSION}.linux-amd64.tar.gz
+    mkdir -p ~/go
 SCRIPT
 
 
@@ -72,9 +73,9 @@ $install_dots = <<-SCRIPT
     sudo chsh -s /usr/bin/zsh vagrant
     ls ~/dots || git clone https://github.com/zmarcantel/dots ~/dots
     cd ~/dots
+    ./install_common.sh
     stow vim zsh env
-    export GOROOT=/usr/local/go
-    export PATH=$PATH:$GOROOT/bin
+    . ~/.zmenv/common.sh
 SCRIPT
 $install_dots += "    ~/.vim_install.sh"
 ["clang", "rust", "go"].each { |c| $install_dots += " --#{c}-completer" }
@@ -93,7 +94,6 @@ $install_steps = {
     'rust' => {:cmd => $install_rust, :priv => false},
     'cpp' => {:cmd => $install_cpp, :priv => true},
     'go' => {:cmd => $install_golang, :priv => true},
-        'gopath' => {:cmd => "mkdir -p ~/go", :priv => false},
 
     'dots' => {:cmd => $install_dots, :priv => false},
 }
